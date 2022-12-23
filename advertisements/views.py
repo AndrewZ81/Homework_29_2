@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from advertisements.models import Category, Advertisement
+from advertisements.serializers import CategorySerializer
 from users.models import User
 
 
@@ -26,15 +27,9 @@ class CategoryListView(ListView):
     def get(self, request, *args, **kwargs) -> JsonResponse:
         super().get(request, *args, **kwargs)
         categories: collections.Iterable = self.object_list.order_by("name")
-        response_as_list: List[Dict[str, int | str]] = []
-        for category in categories:
-            response_as_list.append(
-                {
-                    "id": category.id,
-                    "name": category.name
-                }
-            )
-        return JsonResponse(response_as_list, safe=False,
+        response = CategorySerializer(categories, many=True).data
+
+        return JsonResponse(response, safe=False,
                             json_dumps_params={"ensure_ascii": False, "indent": 4})
 
 
