@@ -25,7 +25,7 @@ urlpatterns = [
     path('cat/', include("advertisements.urls.categories")),
     path('ad/', include("advertisements.urls.advertisements")),
     path('user/', include("users.urls.users")),
-
+    path('api-auth/', include("rest_framework.urls"))
 ]
 
 if settings.DEBUG:
