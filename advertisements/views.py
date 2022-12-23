@@ -97,28 +97,12 @@ class CategoryDetailView(DetailView):
         return JsonResponse(response, json_dumps_params={"ensure_ascii": False, "indent": 4})
 
 
-class AdvertisementListView(ListView):
+class AdvertisementListView(ListAPIView):
     """
     Отображает таблицу Advertisement
     """
-    model = Advertisement
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        super().get(request, *args, **kwargs)
-
-        paginator = Paginator(self.object_list.order_by("-price"), 5)
-        start_page = request.GET.get("page", 1)
-        paginator_object = paginator.get_page(start_page)
-
-        response = AdvertisementListSerializer(paginator_object, many=True).data
-
-        result = {
-            "items": response,
-            "pages number": paginator.num_pages,
-            "total": paginator.count
-        }
-        return JsonResponse(result, safe=False,
-                            json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = Advertisement.objects.all()
+    serializer_class = AdvertisementListSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
