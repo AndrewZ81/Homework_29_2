@@ -27,6 +27,18 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "djangorestframework"
+version = "3.14.0"
+description = "Web APIs for Django, made easy."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+django = ">=3.0"
+pytz = "*"
+
+[[package]]
 name = "pillow"
 version = "9.3.0"
 description = "Python Imaging Library (Fork)"
@@ -47,6 +59,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "pytz"
+version = "2022.7"
+description = "World timezone definitions, modern and historical"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "sqlparse"
 version = "0.4.3"
 description = "A non-validating SQL parser."
@@ -65,7 +85,7 @@ python-versions = ">=2"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "c365f5f3e9bd696e5abd192f50108ff7ec7c1e6165fd482a4165fb5e203525d1"
+content-hash = "35941cfb3ec49bac16b6b6571b56e51fb0710bb82cb72be301e8469064c3279f"
 
 [metadata.files]
 asgiref = [
@@ -75,6 +95,10 @@ asgiref = [
 django = [
     {file = "Django-4.1.4-py3-none-any.whl", hash = "sha256:0b223bfa55511f950ff741983d408d78d772351284c75e9f77d2b830b6b4d148"},
     {file = "Django-4.1.4.tar.gz", hash = "sha256:d38a4e108d2386cb9637da66a82dc8d0733caede4c83c4afdbda78af4214211b"},
+]
+djangorestframework = [
+    {file = "djangorestframework-3.14.0-py3-none-any.whl", hash = "sha256:eb63f58c9f218e1a7d064d17a70751f528ed4e1d35547fdade9aaf4cd103fd08"},
+    {file = "djangorestframework-3.14.0.tar.gz", hash = "sha256:579a333e6256b09489cbe0a067e66abe55c6595d8926be6b99423786334350c8"},
 ]
 pillow = [
     {file = "Pillow-9.3.0-1-cp37-cp37m-win32.whl", hash = "sha256:e6ea6b856a74d560d9326c0f5895ef8050126acfdc7ca08ad703eb0081e82b74"},
@@ -211,6 +235,10 @@ psycopg2-binary = [
     {file = "psycopg2_binary-2.9.5-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:01ad49d68dd8c5362e4bfb4158f2896dc6e0c02e87b8a3770fc003459f1a4425"},
     {file = "psycopg2_binary-2.9.5-cp39-cp39-win32.whl", hash = "sha256:937880290775033a743f4836aa253087b85e62784b63fd099ee725d567a48aa1"},
     {file = "psycopg2_binary-2.9.5-cp39-cp39-win_amd64.whl", hash = "sha256:484405b883630f3e74ed32041a87456c5e0e63a8e3429aa93e8714c366d62bd1"},
+]
+pytz = [
+    {file = "pytz-2022.7-py2.py3-none-any.whl", hash = "sha256:93007def75ae22f7cd991c84e02d434876818661f8df9ad5df9e950ff4e52cfd"},
+    {file = "pytz-2022.7.tar.gz", hash = "sha256:7ccfae7b4b2c067464a6733c6261673fdb8fd1be905460396b97a073e9fa683a"},
 ]
 sqlparse = [
     {file = "sqlparse-0.4.3-py3-none-any.whl", hash = "sha256:0323c0ec29cd52bceabc1b4d9d579e311f3e4961b98d174201d5622a23b85e34"},
