@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from advertisements.models import Category, Advertisement
-from advertisements.serializers import CategoryModelSerializer
+from advertisements.serializers import CategoryListSerializer, AdvertisementListSerializer
 from users.models import User
 
 
@@ -27,7 +27,7 @@ class CategoryListView(ListView):
     def get(self, request, *args, **kwargs) -> JsonResponse:
         super().get(request, *args, **kwargs)
         categories: collections.Iterable = self.object_list.order_by("name")
-        response = CategoryModelSerializer(categories, many=True).data
+        response = CategoryListSerializer(categories, many=True).data
 
         return JsonResponse(response, safe=False,
                             json_dumps_params={"ensure_ascii": False, "indent": 4})
@@ -116,24 +116,14 @@ class AdvertisementListView(ListView):
         start_page = request.GET.get("page", 1)
         paginator_object = paginator.get_page(start_page)
 
-        advertisements: collections.Iterable = paginator_object
-        response_as_list: List[Dict[str, int | str]] = []
-        for advertisement in advertisements:
-            response_as_list.append(
-                {
-                    "id": advertisement.id,
-                    "name": advertisement.name,
-                    "author": advertisement.author_id,
-                    "price": advertisement.price
-                }
-            )
+        response = AdvertisementListSerializer(paginator_object, many=True).data
 
-        result_dict = {
-            "items": response_as_list,
+        result = {
+            "items": response,
             "pages number": paginator.num_pages,
             "total": paginator.count
         }
-        return JsonResponse(result_dict, safe=False,
+        return JsonResponse(result, safe=False,
                             json_dumps_params={"ensure_ascii": False, "indent": 4})
 
 
