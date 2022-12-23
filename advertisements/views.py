@@ -101,7 +101,7 @@ class AdvertisementListView(ListAPIView):
     """
     Отображает таблицу Advertisement
     """
-    queryset = Advertisement.objects.all()
+    queryset = Advertisement.objects.all().order_by("-price")
     serializer_class = AdvertisementListSerializer
 
 
