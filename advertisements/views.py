@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from rest_framework.generics import ListAPIView
 
 from advertisements.models import Category, Advertisement
 from advertisements.serializers import CategoryListSerializer, AdvertisementListSerializer
@@ -18,19 +19,12 @@ def show_main_page(request) -> JsonResponse:
     return JsonResponse({"status": "ok"}, status=200)
 
 
-class CategoryListView(ListView):
+class CategoryListView(ListAPIView):
     """
     Отображает таблицу Category
     """
-    model = Category
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        super().get(request, *args, **kwargs)
-        categories: collections.Iterable = self.object_list.order_by("name")
-        response = CategoryListSerializer(categories, many=True).data
-
-        return JsonResponse(response, safe=False,
-                            json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = Category.objects.all()
+    serializer_class = CategoryListSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
