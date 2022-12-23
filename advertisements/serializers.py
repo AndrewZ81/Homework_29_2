@@ -1,6 +1,10 @@
-from rest_framework.serializers import Serializer, CharField, IntegerField
+from rest_framework.serializers import ModelSerializer
+
+from advertisements.models import Category
 
 
-class CategorySerializer(Serializer):
-    id = IntegerField()
-    name = CharField(max_length=200)
+class CategoryModelSerializer(ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = "__all__"
