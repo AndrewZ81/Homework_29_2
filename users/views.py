@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from users.models import User, Location
+from users.serializers import UserListSerializer
 
 
 class UserListView(ListView):
@@ -25,30 +26,18 @@ class UserListView(ListView):
         paginator_object = paginator.get_page(start_page)
 
         users: collections.Iterable = paginator_object
-        response_as_list: List[Dict[str, int | str | dict]] = []
-        for user in users:
-            response_as_list.append(
-                {
-                    "id": user.id,
-                    "username": user.username,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "role": user.role,
-                    "age": user.age,
-                    "locations": [
-                        _location.name for _location in user.location.all()
-                    ],
-                    "total_advertisements":
-                        user.advertisement_set.filter(is_published=True).count()
-                }
-            )
 
-        result_dict = {
-            "items": response_as_list,
+        for user in users:
+            total_ads = user.advertisement_set.filter(is_published=True).count()
+            setattr(user, "total_advertisements", total_ads)
+
+        response = UserListSerializer(paginator_object, many=True).data
+        result = {
+            "items": response,
             "pages number": paginator.num_pages,
             "total": paginator.count
         }
-        return JsonResponse(result_dict, safe=False,
+        return JsonResponse(result, safe=False,
                             json_dumps_params={"ensure_ascii": False, "indent": 4})
 
 
