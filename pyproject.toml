@@ -4,10 +4,13 @@ version = "0.1.0"
 description = ""
 authors = ["Andrew Zaiko <andrewzaiko@gmail.com>"]
 readme = "README.md"
-packages = [{include = "homework_29_2"}]
+#packages = [{include = "homework_28_2"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+django = "^4.1.4"
+psycopg2-binary = "^2.9.5"
+pillow = "^9.3.0"
 
 
 [build-system]
