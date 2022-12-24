@@ -1,7 +1,7 @@
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer, IntegerField
 
-from users.models import User
+from users.models import User, Location
 
 
 class UserListSerializer(ModelSerializer):
@@ -14,4 +14,11 @@ class UserListSerializer(ModelSerializer):
 
     class Meta:
         model = User
+        fields = "__all__"
+
+
+class LocationViewSetSerializer(ModelSerializer):
+
+    class Meta:
+        model = Location
         fields = "__all__"
