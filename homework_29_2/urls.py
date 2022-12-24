@@ -19,23 +19,26 @@ from django.conf.urls.static import static
 from rest_framework.routers import SimpleRouter
 
 from advertisements import views
+from advertisements.views import CategoryViewSet
 from homework_29_2 import settings
 from users.views import LocationViewSet
 
 location_router = SimpleRouter()
 location_router.register("location", LocationViewSet)
 
+category_router = SimpleRouter()
+category_router.register("cat", CategoryViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.show_main_page),
-    path('cat/', include("advertisements.urls.categories")),
     path('ad/', include("advertisements.urls.advertisements")),
     path('user/', include("users.urls.users")),
     path('api-auth/', include("rest_framework.urls"))
 ]
 
 urlpatterns += location_router.urls
-
+urlpatterns += category_router.urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
