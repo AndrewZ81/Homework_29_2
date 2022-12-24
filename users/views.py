@@ -7,9 +7,10 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from rest_framework.viewsets import ModelViewSet
 
 from users.models import User, Location
-from users.serializers import UserListSerializer
+from users.serializers import UserListSerializer, LocationViewSetSerializer
 
 
 class UserListView(ListView):
@@ -159,3 +160,9 @@ class UserDeleteView(DeleteView):
         super().delete(request, *args, **kwargs)
 
         return JsonResponse({"status": "ok"}, status=200)
+
+
+class LocationViewSet(ModelViewSet):
+
+    queryset = Location.objects.all()
+    serializer_class = LocationViewSetSerializer
