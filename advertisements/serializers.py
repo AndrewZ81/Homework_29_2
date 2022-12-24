@@ -4,7 +4,7 @@ from rest_framework.serializers import ModelSerializer
 from advertisements.models import Category, Advertisement
 
 
-class CategoryListSerializer(ModelSerializer):
+class CategoryViewSetSerializer(ModelSerializer):
 
     class Meta:
         model = Category
