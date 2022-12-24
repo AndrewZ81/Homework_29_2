@@ -9,9 +9,10 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from rest_framework.generics import ListAPIView
+from rest_framework.viewsets import ModelViewSet
 
 from advertisements.models import Category, Advertisement
-from advertisements.serializers import CategoryListSerializer, AdvertisementListSerializer
+from advertisements.serializers import CategoryViewSetSerializer, AdvertisementListSerializer
 from users.models import User
 
 
@@ -19,82 +20,17 @@ def show_main_page(request) -> JsonResponse:
     return JsonResponse({"status": "ok"}, status=200)
 
 
-class CategoryListView(ListAPIView):
+class CategoryViewSet(ModelViewSet):
     """
-    Отображает таблицу Category
+    Кратко отображает таблицу Категории (сортирует записи по алфавиту),
+    детально отображает запись (выбранную по id),
+    создаёт новую запись,
+    редактирует запись (выбранную по id),
+    удаляет запись (выбранную по id)
     """
-    queryset = Category.objects.all()
-    serializer_class = CategoryListSerializer
 
-
-@method_decorator(csrf_exempt, name="dispatch")
-class CategoryCreateView(CreateView):
-    """
-    Cоздаёт новую запись Category
-    """
-    model = Category
-    fields = ["name"]
-
-    def post(self, request, *args, **kwargs) -> JsonResponse:
-        category_data: Dict[str, str] = json.loads(request.body)
-        category: Category = Category.objects.create(**category_data)
-        response_as_dict: Dict[str, int | str] = {
-            "id": category.id,
-            "name": category.name
-        }
-        return JsonResponse(response_as_dict, json_dumps_params={"ensure_ascii": False, "indent": 4})
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class CategoryUpdateView(UpdateView):
-    """
-    Редактирует запись Category
-    """
-    model = Category
-    fields = ["name"]
-
-    def patch(self, request, *args, **kwargs) -> JsonResponse:
-        super().post(request, *args, **kwargs)
-        category_data: Dict[str, str] = json.loads(request.body)
-
-        if "name" in category_data:
-            self.object.name = category_data["name"]
-        self.object.save()
-
-        response_as_dict: Dict[str, int | str] = {
-            "id": self.object.id,
-            "name": self.object.name
-        }
-        return JsonResponse(response_as_dict, json_dumps_params={"ensure_ascii": False, "indent": 4})
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class CategoryDeleteView(DeleteView):
-    """
-    Удаляет запись Category
-    """
-    model = Category
-    success_url = "/"
-
-    def delete(self, request, *args, **kwargs) -> JsonResponse:
-        super().delete(request, *args, **kwargs)
-
-        return JsonResponse({"status": "ok"}, status=200)
-
-
-class CategoryDetailView(DetailView):
-    """
-    Делает выборку записи из таблицы Category по id
-    """
-    model = Category
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        category: Category = self.get_object()
-        response: Dict[str, int | str] = {
-            "id": category.id,
-            "name": category.name
-        }
-        return JsonResponse(response, json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = Category.objects.all().order_by("name")
+    serializer_class = CategoryViewSetSerializer
 
 
 class AdvertisementListView(ListAPIView):
