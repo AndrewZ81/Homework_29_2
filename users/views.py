@@ -7,10 +7,11 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import User, Location
-from users.serializers import UserListSerializer, LocationViewSetSerializer
+from users.serializers import UserListSerializer, LocationViewSetSerializer, UserDetailViewSerializer
 
 
 class UserListView(ListView):
@@ -42,27 +43,12 @@ class UserListView(ListView):
                             json_dumps_params={"ensure_ascii": False, "indent": 4})
 
 
-class UserDetailView(DetailView):
+class UserDetailView(RetrieveAPIView):
     """
-    Делает выборку записи из таблицы User по id
+    Делает выборку записи из таблицы Пользователи по id
     """
-    model = User
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        user: User = self.get_object()
-        response: Dict[str, int | str | dict] = {
-            "id": user.id,
-            "username": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "role": user.role,
-            "age": user.age,
-            "locations": [
-                _location.name for _location in user.location.all()
-            ]
-        }
-        return JsonResponse(response, safe=False,
-                            json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = User.objects.all()
+    serializer_class = UserDetailViewSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
