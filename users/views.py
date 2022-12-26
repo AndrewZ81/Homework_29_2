@@ -149,6 +149,12 @@ class UserDeleteView(DeleteView):
 
 
 class LocationViewSet(ModelViewSet):
-
+    """
+    Кратко отображает таблицу Местоположения,
+    детально отображает запись (выбранную по id),
+    создаёт новую запись,
+    редактирует запись (выбранную по id),
+    удаляет запись (выбранную по id)
+    """
     queryset = Location.objects.all()
     serializer_class = LocationViewSetSerializer
