@@ -7,11 +7,12 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-from rest_framework.generics import RetrieveAPIView, ListAPIView, DestroyAPIView
+from rest_framework.generics import RetrieveAPIView, ListAPIView, DestroyAPIView, CreateAPIView
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import User, Location
-from users.serializers import UserListSerializer, LocationViewSetSerializer, UserDetailViewSerializer
+from users.serializers import LocationViewSetSerializer, UserDetailViewSerializer, \
+    UserListViewSerializer, UserCreateViewSerializer
 
 
 class UserListView(ListAPIView):
@@ -19,7 +20,7 @@ class UserListView(ListAPIView):
     Кратко отображает таблицу Пользователи
     """
     queryset = User.objects.all().order_by("username")
-    serializer_class = UserListSerializer
+    serializer_class = UserListViewSerializer
 
 
 class UserDetailView(RetrieveAPIView):
@@ -30,43 +31,12 @@ class UserDetailView(RetrieveAPIView):
     serializer_class = UserDetailViewSerializer
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-class UserCreateView(CreateView):
+class UserCreateView(CreateAPIView):
     """
-    Cоздаёт новую запись User
+    Cоздаёт новую запись User по id
     """
-    model = User
-    fields = "__all__"
-
-    def post(self, request, *args, **kwargs) -> JsonResponse:
-        user_data: Dict[str, int | str] = json.loads(request.body)
-
-        user: User = User.objects.create(
-            username=user_data.get("username"),
-            first_name=user_data.get("first_name"),
-            last_name=user_data.get("last_name"),
-            password=user_data.get("password"),
-            role=user_data.get("role"),
-            age=user_data.get("age")
-        )
-
-        for location in user_data["locations"]:
-            location, _ = Location.objects.get_or_create(name=location)
-            user.location.add(location)
-
-        response: Dict[str, int | str] = {
-            "id": user.id,
-            "username": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "role": user.role,
-            "age": user.age,
-            "locations": [
-                _location.name for _location in user.location.all()
-            ]
-        }
-        return JsonResponse(response, safe=False,
-                            json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = User.objects.all()
+    serializer_class = UserCreateViewSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
