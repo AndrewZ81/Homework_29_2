@@ -11,7 +11,7 @@ class CategoryViewSetSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class AdvertisementListSerializer(ModelSerializer):
+class AdvertisementListViewSerializer(ModelSerializer):
     author = SlugRelatedField(
         read_only=True,
         slug_field="username"
