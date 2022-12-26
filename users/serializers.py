@@ -50,13 +50,28 @@ class UserCreateViewSerializer(ModelSerializer):
 
 
 class UserUpdateViewSerializer(ModelSerializer):
-    location = StringRelatedField(many=True)
+    location = SlugRelatedField(
+        required=False,
+        many=True,
+        slug_field="name",
+        queryset=Location.objects.all()
+    )
 
     def is_valid(self, *, raise_exception=False):
-        pass
+        user_locations = self.initial_data.pop("location", [])
+        setattr(self, "_location", user_locations)
+        return super().is_valid(raise_exception=raise_exception)
 
-    def update(self, instance, validated_data):
-        pass
+    def save(self, **kwargs):
+        user = super().save(**kwargs)
+        for loc in self._location:
+            new_location, _ = Location.objects.get_or_create(name=loc)
+            user.location.add(new_location)
+        return user
+
+    class Meta:
+        model = User
+        fields = "__all__"
 
 
 class LocationViewSetSerializer(ModelSerializer):
