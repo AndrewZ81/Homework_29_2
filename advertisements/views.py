@@ -53,8 +53,8 @@ class AdvertisementListView(ListAPIView):
             self.queryset = self.queryset.filter(name__icontains=text)
 
         location = request.GET.get("location")
-        if locations:
-            self.queryset = self.queryset.filter(author__location__name__icontains=locations)
+        if location:
+            self.queryset = self.queryset.filter(author__location__name__icontains=location)
 
         return super().list(self, request, *args, **kwargs)
 
