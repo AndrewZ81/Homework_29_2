@@ -8,11 +8,12 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
 
 from advertisements.models import Category, Advertisement
-from advertisements.serializers import CategoryViewSetSerializer, AdvertisementListViewSerializer
+from advertisements.serializers import CategoryViewSetSerializer, AdvertisementListViewSerializer, \
+    AdvertisementDetailViewSerializer
 from users.models import User
 
 
@@ -81,31 +82,12 @@ class AdvertisementCreateView(CreateView):
         return JsonResponse(response_as_dict, json_dumps_params={"ensure_ascii": False, "indent": 4})
 
 
-class AdvertisementDetailView(DetailView):
+class AdvertisementDetailView(RetrieveAPIView):
     """
-    Делает выборку записи из таблицы Advertisement по id
+    Делает выборку записи из таблицы Объявления по id
     """
-    model = Advertisement
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        advertisement: Advertisement = self.get_object()
-        response: Dict[str, int | str | dict] = {
-            "id": advertisement.id,
-            "name": advertisement.name,
-            "author_id": advertisement.author_id,
-            "author": advertisement.author.username,
-            "price": advertisement.price,
-            "description": advertisement.description,
-            "address": [
-                _location.name for _location in advertisement.author.location.all()
-            ],
-            "image": advertisement.image.url if advertisement.image else None,
-            "is_published": advertisement.is_published,
-            "category_id": advertisement.category.id,
-            "category_name": advertisement.category.name
-        }
-        return JsonResponse(response, safe=False,
-                            json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = Advertisement.objects.all()
+    serializer_class = AdvertisementDetailViewSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
