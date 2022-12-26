@@ -19,10 +19,15 @@ class AdvertisementListViewSerializer(ModelSerializer):
         slug_field="username"
     )
     category = StringRelatedField()
+    locations = SerializerMethodField()
 
     class Meta:
         model = Advertisement
-        fields = ["id", "name", "author", "price", "category"]
+        fields = ["id", "name", "author", "price", "category", "locations"]
+
+    def get_locations(self, ad):
+        setattr(ad, "locations", [location.name for location in ad.author.location.all()])
+        return ad.locations
 
 
 class AdvertisementDetailViewSerializer(ModelSerializer):
