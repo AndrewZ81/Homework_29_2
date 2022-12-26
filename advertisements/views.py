@@ -1,13 +1,11 @@
-import collections
 import json
-from typing import List, Dict
+from typing import Dict
 
 from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -36,8 +34,11 @@ class CategoryViewSet(ModelViewSet):
 
 class AdvertisementListView(ListAPIView):
     """
-    Отображает таблицу Advertisement, при запросе
-    фильтрует записи по категориям
+    Отображает таблицу Advertisement, при запросе фильтрует записи:
+     - по категориям
+     - по местоположению
+     - по тексту в названии объявления
+     - по цене
     """
     queryset = Advertisement.objects.all().order_by("-price")
     serializer_class = AdvertisementListViewSerializer
