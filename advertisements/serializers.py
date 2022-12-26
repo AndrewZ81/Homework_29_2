@@ -3,7 +3,7 @@ from rest_framework.relations import SlugRelatedField, PrimaryKeyRelatedField, S
 from rest_framework.serializers import ModelSerializer
 
 from advertisements.models import Category, Advertisement
-from users.models import User, Location
+from users.models import User
 
 
 class CategoryViewSetSerializer(ModelSerializer):
