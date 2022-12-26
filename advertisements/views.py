@@ -56,6 +56,14 @@ class AdvertisementListView(ListAPIView):
         if location:
             self.queryset = self.queryset.filter(author__location__name__icontains=location)
 
+        price_from = request.GET.get("price_from")
+        if price_from:
+            self.queryset = self.queryset.filter(price__gte=price_from)
+
+        price_to = request.GET.get("price_to")
+        if price_to:
+            self.queryset = self.queryset.filter(price__lte=price_to)
+
         return super().list(self, request, *args, **kwargs)
 
 
