@@ -12,7 +12,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
 from advertisements.models import Category, Advertisement
-from advertisements.serializers import CategoryViewSetSerializer, AdvertisementListSerializer
+from advertisements.serializers import CategoryViewSetSerializer, AdvertisementListViewSerializer
 from users.models import User
 
 
@@ -38,7 +38,7 @@ class AdvertisementListView(ListAPIView):
     Отображает таблицу Advertisement
     """
     queryset = Advertisement.objects.all().order_by("-price")
-    serializer_class = AdvertisementListSerializer
+    serializer_class = AdvertisementListViewSerializer
 
 
 @method_decorator(csrf_exempt, name="dispatch")
