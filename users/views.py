@@ -7,40 +7,19 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import User, Location
 from users.serializers import UserListSerializer, LocationViewSetSerializer, UserDetailViewSerializer
 
 
-class UserListView(ListView):
+class UserListView(ListAPIView):
     """
-    Отображает таблицу User
+    Кратко отображает таблицу Пользователи
     """
-    model = User
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        super().get(request, *args, **kwargs)
-
-        paginator = Paginator(self.object_list.order_by("username"), 2)
-        start_page = request.GET.get("page", 1)
-        paginator_object = paginator.get_page(start_page)
-
-        users: collections.Iterable = paginator_object
-
-        for user in users:
-            total_ads = user.advertisement_set.filter(is_published=True).count()
-            setattr(user, "total_advertisements", total_ads)
-
-        response = UserListSerializer(paginator_object, many=True).data
-        result = {
-            "items": response,
-            "pages number": paginator.num_pages,
-            "total": paginator.count
-        }
-        return JsonResponse(result, safe=False,
-                            json_dumps_params={"ensure_ascii": False, "indent": 4})
+    queryset = User.objects.all().order_by("username")
+    serializer_class = UserListSerializer
 
 
 class UserDetailView(RetrieveAPIView):
