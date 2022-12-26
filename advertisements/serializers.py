@@ -18,10 +18,11 @@ class AdvertisementListViewSerializer(ModelSerializer):
         read_only=True,
         slug_field="username"
     )
+    category = StringRelatedField()
 
     class Meta:
         model = Advertisement
-        fields = ["id", "name", "author", "price"]
+        fields = ["id", "name", "author", "price", "category"]
 
 
 class AdvertisementDetailViewSerializer(ModelSerializer):

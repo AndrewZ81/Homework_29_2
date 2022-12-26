@@ -36,10 +36,16 @@ class CategoryViewSet(ModelViewSet):
 
 class AdvertisementListView(ListAPIView):
     """
-    Отображает таблицу Advertisement
+    Отображает таблицу Advertisement, при запросе
+    фильтрует записи по категориям
     """
     queryset = Advertisement.objects.all().order_by("-price")
     serializer_class = AdvertisementListViewSerializer
+
+    def list(self, request, *args, **kwargs):
+        categories = request.GET.getlist("cat")
+        self.queryset = self.queryset.filter(category__in=categories)
+        return super().list(self, request, *args, **kwargs)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
