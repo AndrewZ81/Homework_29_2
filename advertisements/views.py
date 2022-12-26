@@ -43,9 +43,19 @@ class AdvertisementListView(ListAPIView):
     serializer_class = AdvertisementListViewSerializer
 
     def list(self, request, *args, **kwargs):
+
         categories = request.GET.getlist("cat")
         if categories:
             self.queryset = self.queryset.filter(category__in=categories)
+
+        text = request.GET.get("text")
+        if text:
+            self.queryset = self.queryset.filter(name__icontains=text)
+
+        location = request.GET.get("location")
+        if locations:
+            self.queryset = self.queryset.filter(author__location__name__icontains=locations)
+
         return super().list(self, request, *args, **kwargs)
 
 
