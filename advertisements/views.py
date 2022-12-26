@@ -44,7 +44,8 @@ class AdvertisementListView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         categories = request.GET.getlist("cat")
-        self.queryset = self.queryset.filter(category__in=categories)
+        if categories:
+            self.queryset = self.queryset.filter(category__in=categories)
         return super().list(self, request, *args, **kwargs)
 
 
