@@ -4,7 +4,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from users.models import User, Location
 
 
-class UserListSerializer(ModelSerializer):
+class UserListViewSerializer(ModelSerializer):
     total_advertisements = SerializerMethodField()
     location = StringRelatedField(many=True)
 
@@ -22,6 +22,41 @@ class UserDetailViewSerializer(ModelSerializer):
     class Meta:
         model = User
         exclude = ["password"]
+
+
+class UserCreateViewSerializer(ModelSerializer):
+    location = SlugRelatedField(
+        required=False,
+        many=True,
+        slug_field="name",
+        queryset=Location.objects.all()
+    )
+
+    def is_valid(self, *, raise_exception=False):
+        user_locations = self.initial_data.pop("location", [])
+        setattr(self, "_location", user_locations)
+        return super().is_valid(raise_exception=raise_exception)
+
+    def create(self, validated_data):
+        new_user = User.objects.create(**validated_data)
+        for loc in self._location:
+            new_location, _ = Location.objects.get_or_create(name=loc)
+            new_user.location.add(new_location)
+        return new_user
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+
+class UserUpdateViewSerializer(ModelSerializer):
+    location = StringRelatedField(many=True)
+
+    def is_valid(self, *, raise_exception=False):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
 
 
 class LocationViewSetSerializer(ModelSerializer):
